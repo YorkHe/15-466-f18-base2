@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include <algorithm>
 
 void Game::update(float time) {
 	ball += ball_velocity * time;

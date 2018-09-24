@@ -2,32 +2,21 @@
 #include "Mode.hpp"
 
 //Load.hpp is included because of the call_load_functions() call:
-#include "Load.hpp"
 
 //The 'GameMode' mode plays the game:
-#include "GameMode.hpp"
+#include "FishMode.h"
 
 //The 'Sound' header has functions for managing sound:
-#include "Sound.hpp"
 
 //GL.hpp will include a non-namespace-polluting set of opengl prototypes:
-#include "GL.hpp"
 
 //Includes for libSDL:
-#include <SDL.h>
 
 //...and for glm:
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 //...and for c++ standard library functions:
 #include <chrono>
 #include <iostream>
-#include <stdexcept>
-#include <fstream>
-#include <memory>
-#include <algorithm>
 
 int main(int argc, char **argv) {
 #ifdef _WIN32
@@ -116,7 +105,7 @@ int main(int argc, char **argv) {
 
 	//------------ create game mode + make current --------------
 
-	Mode::set_current(std::make_shared< GameMode >(client));
+	Mode::set_current(std::make_shared<FishMode>(client));
 
 	//------------ main loop ------------
 

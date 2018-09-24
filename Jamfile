@@ -72,12 +72,12 @@ CLIENT_NAMES =
 	vertex_color_program
 	Scene
 	Mode
-	GameMode
 	MenuMode
 	Load
 	MeshBuffer
 	draw_text
 	Sound
+	FishMode
 	;
 
 if $(OS) = NT {
