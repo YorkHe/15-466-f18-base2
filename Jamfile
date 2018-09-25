@@ -78,6 +78,8 @@ CLIENT_NAMES =
 	draw_text
 	Sound
 	FishMode
+	Player
+	Target
 	;
 
 if $(OS) = NT {

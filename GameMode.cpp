@@ -1,11 +1,22 @@
-#define NOMINMAX
 #include "GameMode.hpp"
 
+#include "MenuMode.hpp"
 #include "Load.hpp"
+#include "MeshBuffer.hpp"
 #include "Scene.hpp"
 #include "gl_errors.hpp" //helper for dumpping OpenGL error messages
+#include "read_chunk.hpp" //helper for reading a vector of structures from a file
+#include "data_path.hpp" //helper to get paths relative to executable
+#include "compile_program.hpp" //helper to compile opengl shader programs
+#include "draw_text.hpp" //helper to... um.. draw text
 #include "vertex_color_program.hpp"
 
+#include <glm/gtc/type_ptr.hpp>
+
+#include <iostream>
+#include <fstream>
+#include <map>
+#include <cstddef>
 #include <random>
 
 

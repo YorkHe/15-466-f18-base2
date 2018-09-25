@@ -21,6 +21,8 @@ struct FishMode : public Mode {
 
     void draw(glm::uvec2 const &drawable_size) override;
 
+    void addTarget(int type);
+
     Game state;
 
     Client &client;

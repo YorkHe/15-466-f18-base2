@@ -43,7 +43,8 @@ struct Scene {
 
 		//constructor/destructor:
 		Transform() = default;
-		Transform(Transform &) = delete;
+
+//		Transform(Transform &) = delete;
 		~Transform() {
 			while (last_child) {
 				last_child->set_parent(nullptr);

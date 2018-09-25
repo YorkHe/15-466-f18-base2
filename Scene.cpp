@@ -111,7 +111,7 @@ glm::mat4 Scene::Camera::make_projection() const {
 
 //templated helper functions to avoid having to write the same new/delete code three times:
 template< typename T, typename... Args >
-T *list_new(T * &first, Args&&... args) {
+T *list_new(T *&first, Args &&... args) {
 	T *t = new T(std::forward< Args >(args)...); //"perfect forwarding"
 	if (first) {
 		t->alloc_next = first;
@@ -168,6 +168,7 @@ void Scene::draw(Scene::Camera const *camera) const {
 	glm::mat4 world_to_clip = camera->make_projection() * world_to_camera;
 
 	for (Scene::Object *object = first_object; object != nullptr; object = object->alloc_next) {
+//		std::cerr << "O" << object->transform->name << std::endl;
 		glm::mat4 local_to_world = object->transform->make_local_to_world();
 
 		//compute modelview+projection (object space to clip space) matrix for this object:
