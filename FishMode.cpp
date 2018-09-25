@@ -216,6 +216,7 @@ void FishMode::update(float elapsed) {
                 state.opponent.hook_transformation->position.y = y;
 
                 offset += sizeof(float);
+                std::vector<int> id_list;
                 if (c->recv_buffer.size() > offset) {
                     if (c->recv_buffer[offset] == 'g') {
                         offset += 1;
@@ -230,6 +231,7 @@ void FishMode::update(float elapsed) {
                             int type;
                             int velocity;
                             float x, y;
+                            id_list.emplace_back(id);
 
                             memcpy(&(id), c->recv_buffer.data() + offset, sizeof(int));
                             offset += sizeof(int);
@@ -261,6 +263,19 @@ void FishMode::update(float elapsed) {
                         }
                     }
                 }
+
+                for (auto iter = state.target_list.begin(); iter != state.target_list.end(); ++iter) {
+                    bool found = false;
+                    for (int id : id_list) {
+                        if ((*iter)->id == id) {
+                            found = true;
+                        }
+                    }
+
+//                    if (!found) {
+//                        state.target_list.erase(iter);
+//                    }
+                }
             }
             c->recv_buffer.clear();
         }
@@ -279,7 +294,7 @@ void FishMode::draw(glm::uvec2 const &drawable_size) {
     camera->aspect = drawable_size.x / float(drawable_size.y);
 
 
-    glClearColor(0.25f, 0.0f, 0.5f, 0.0f);
+    glClearColor(0.15f, 0.0f, 0.7f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //set up basic OpenGL state:

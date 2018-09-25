@@ -9,6 +9,7 @@
 #include "Player.h"
 
 #include <glm/glm.hpp>
+#include <iostream>
 
 struct Target {
 
@@ -24,11 +25,18 @@ struct Target {
     int type = 0;
     int id = 0;
 
+    Player *clingOn = nullptr;
+
+
+
     void update(float time);
 
     bool hit_detect(glm::vec2 hook_position);
 
-    void on_hit(Player &player) {}
+    virtual void on_hit(Player &player) {
+        std::cerr << "HITHITHITHIT" << std::endl;
+        clingOn = &(player);
+    };
 };
 
 

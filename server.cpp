@@ -30,7 +30,7 @@ void getRandomTarget() {
 
     int type = ((std::rand() % 100) < 20) ? 1 : 0;
     int direction = (std::rand() % 2);
-    float y = ((std::rand() % 800) / 100.0f) - 5.0f;
+    float y = ((std::rand() % 800) / 100.0f) - 6.0f;
     int speed = (std::rand() % 3) + 4;
 
     std::cerr << "G:" << type << "," << direction << "," << y << "," << speed << std::endl;
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-    std::srand(0x15666);
+    std::srand(0x15466);
 	Server server(argv[1]);
 
 //	Game state;
@@ -159,6 +159,15 @@ int main(int argc, char **argv) {
             for (auto it = target_list.begin(); it != target_list.end(); ++it) {
                 Target *target = *it;
                 target->update(1 / 60.0f);
+
+                if (target->hit_detect(player_one.hook_position)) {
+                    target->on_hit(player_one);
+                }
+
+                if (target->hit_detect(player_two.hook_position)) {
+                    target->on_hit(player_two);
+                }
+
                 if ((target->position.x > 16) || (target->position.x < -20)) {
                     target_list.erase(it);
                 }

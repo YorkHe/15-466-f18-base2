@@ -64,6 +64,8 @@ COMMON_NAMES =
 	Game
 	Target
 	Scene
+	Fish
+	Crab
 	;
 
 CLIENT_NAMES =

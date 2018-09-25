@@ -3,6 +3,9 @@
 //
 
 #include "Fish.h"
+#include <iostream>
 
 void Fish::on_hit(Player &player) {
+    std::cerr << "HITHITHIT" << std::endl;
+    clingOn = &(player);
 }

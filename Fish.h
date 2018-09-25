@@ -10,7 +10,7 @@
 struct Fish : public Target {
     Fish(Scene::Transform transform, int velocity) : Target(transform, velocity) {}
 
-    void on_hit(Player &player);
+    void on_hit(Player &player) override;
 };
 
 

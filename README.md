@@ -1,11 +1,10 @@
 # Game Information
-(Note: fill in this portion with information about your game.)
 
-Title: (TODO: your game's title)
+Title: FishOff
 
-Author: (TODO: your name)
+Author: Yu He
 
-Design Document: [TODO: name of design document](TODO: link to design document)
+Design Document: [FishOff](http://graphics.cs.cmu.edu/courses/15-466-f18/game2-designs/jgualtie)
 
 Screen Shot:
 
@@ -13,15 +12,15 @@ Screen Shot:
 
 How To Play:
 
-TODO: describe the controls and (if needed) goals/strategy.
+Use W/D to move the character and SPACE key to lay down the hook. 
 
 Changes From The Design Document:
 
-TODO: what did you need to add/remove/modify from the original design? Why?
+Not much. Basically being loyalty to the design document. 
 
 Good / Bad / Ugly Code:
 
-TODO: provide examples of code you wrote from this project that you think is good (elegant, simple, useful), bad (hack-y, brittle, unreadable), and ugly (particularly inelegant). Provide a sentence or two of justification for the examples.
+The server part is rather ugly. If I'm given more time, I would try to clean it up a little bit. 
 
 # Using This Base Code
 
