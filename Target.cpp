@@ -12,7 +12,7 @@ Target::Target(Scene::Transform transform, int velocity) {
 }
 
 void Target::update(float time) {
-    transform.position.x += velocity * 4 * time;
+    transform.position.x += velocity * time;
     position.x = transform.position.x;
 }
 

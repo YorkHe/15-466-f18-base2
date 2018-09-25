@@ -93,7 +93,6 @@ FishMode::FishMode(Client &client) : client(client) {
     this->client.connection.send_raw("h", 1);
     state.player.player_transformation = player_one_transformation;
     state.player.hook_transformation = player_one_hook_transformation;
-    addTarget(1);
 }
 
 FishMode::~FishMode() {
@@ -131,23 +130,29 @@ bool FishMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
     return false;
 }
 
-void FishMode::addTarget(int type) {
+void FishMode::addTarget(int id, int type, int velocity, float y) {
     if (type == 0) {
-        if (rand() % 2 == 0) {
-            Fish *fish = new Fish(*fish_left_transformation, 1);
+        if (velocity > 0) {
+            Fish *fish = new Fish(*fish_left_transformation, velocity);
+            fish->transform.position.y = y;
+            fish->id = id;
             state.target_list.emplace_back(fish);
 
             newObject(const_cast<Scene &>(*scene), &(fish->transform), "Fish_Left");
             std::cerr << fish->position.x << "," << fish->position.y << std::endl;
         } else {
-            Fish *fish = new Fish(*fish_right_transformation, -1);
+            Fish *fish = new Fish(*fish_right_transformation, velocity);
+            fish->id = id;
+            fish->transform.position.y = y;
             state.target_list.emplace_back(fish);
 
             newObject(const_cast<Scene &>(*scene), &(fish->transform), "Fish_Right");
             std::cerr << fish->position.x << "," << fish->position.y << std::endl;
         }
     } else if (type == 1) {
-        Crab *crab = new Crab(*crab_transformation, 1);
+        Crab *crab = new Crab(*crab_transformation, velocity);
+        crab->id = id;
+        crab->transform.position.y = y;
         state.target_list.emplace_back(crab);
         newObject(const_cast<Scene &>(*scene), &(crab->transform), "Crab");
         std::cerr << crab->position.x << "," << crab->position.y << std::endl;
@@ -172,6 +177,7 @@ void FishMode::update(float elapsed) {
     }
 
     if (client.connection && (state.player.direction != 0 || state.player.drop)) {
+//    if (client.connection){
 //        state.order += 1;
         client.connection.send_raw("s", 1);
         client.connection.send_raw(&state.order, sizeof(int));
@@ -196,28 +202,71 @@ void FishMode::update(float elapsed) {
                 }
             } else if (c->recv_buffer[0] == 's') {
                 float x, y;
-                memcpy(&(x), c->recv_buffer.data() + 1, sizeof(float));
-                memcpy(&(y), c->recv_buffer.data() + 1 + sizeof(float), sizeof(float));
+                int offset = 1;
+                memcpy(&(x), c->recv_buffer.data() + offset, sizeof(float));
+                offset += sizeof(float);
+                memcpy(&(y), c->recv_buffer.data() + offset, sizeof(float));
                 state.opponent.player_transformation->position.x = x;
                 state.opponent.player_transformation->position.y = y;
-                memcpy(&(x), c->recv_buffer.data() + 1 + sizeof(float) + sizeof(float), sizeof(float));
-                memcpy(&(y), c->recv_buffer.data() + 1 + sizeof(float) + sizeof(float) + sizeof(float), sizeof(float));
+                offset += sizeof(float);
+                memcpy(&(x), c->recv_buffer.data() + offset, sizeof(float));
+                offset += sizeof(float);
+                memcpy(&(y), c->recv_buffer.data() + offset, sizeof(float));
                 state.opponent.hook_transformation->position.x = x;
                 state.opponent.hook_transformation->position.y = y;
-                std::cerr << c->recv_buffer[0] << x << "," << y << std::endl;
+
+                offset += sizeof(float);
+                if (c->recv_buffer.size() > offset) {
+                    if (c->recv_buffer[offset] == 'g') {
+                        offset += 1;
+
+                        size_t size;
+                        memcpy(&(size), c->recv_buffer.data() + offset, sizeof(size_t));
+                        offset += sizeof(size_t);
+                        std::cerr << c->recv_buffer[offset] << x << "!!" << y << "!!" << size << std::endl;
+
+                        for (int i = 0; i < size; i++) {
+                            int id;
+                            int type;
+                            int velocity;
+                            float x, y;
+
+                            memcpy(&(id), c->recv_buffer.data() + offset, sizeof(int));
+                            offset += sizeof(int);
+
+                            memcpy(&(type), c->recv_buffer.data() + offset, sizeof(int));
+                            offset += sizeof(int);
+                            memcpy(&(velocity), c->recv_buffer.data() + offset, sizeof(int));
+                            offset += sizeof(int);
+                            memcpy(&(x), c->recv_buffer.data() + offset, sizeof(float));
+                            offset += sizeof(float);
+                            memcpy(&(y), c->recv_buffer.data() + offset, sizeof(float));
+                            offset += sizeof(float);
+
+                            std::cerr << id << "," << type << "," << velocity << "," << x << "," << y << std::endl;
+
+                            bool found = false;
+                            for (Target *target : state.target_list) {
+                                if (target->id == id) {
+                                    target->transform.position.x = x;
+                                    target->transform.position.y = y;
+                                    found = true;
+                                }
+                            }
+
+                            if (!found) {
+                                std::cerr << "NOT FOUND" << std::endl;
+                                addTarget(id, type, velocity, y);
+                            }
+                        }
+                    }
+                }
             }
             c->recv_buffer.clear();
         }
     });
 
     state.player.update(elapsed);
-
-    for (Target *target: state.target_list) {
-        target->update(elapsed);
-        if (target->hit_detect(state.player.hook_position)) {
-            target->on_hit(state.player);
-        }
-    }
 
     state.player.hook_transformation->position.x = state.player.hook_position.x;
     state.player.hook_transformation->position.y = state.player.hook_position.y;

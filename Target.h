@@ -21,6 +21,8 @@ struct Target {
     Scene::Transform transform = Scene::Transform();
     glm::vec2 position = glm::vec2(0, 0);
     int velocity = 0;
+    int type = 0;
+    int id = 0;
 
     void update(float time);
 
